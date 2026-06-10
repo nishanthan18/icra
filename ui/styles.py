@@ -25,6 +25,27 @@ MAIN_CSS = """
 * { font-family: 'Syne', sans-serif !important; }
 code, pre, .stCode * { font-family: 'JetBrains Mono', monospace !important; }
 
+/* ── Sidebar collapse/expand toggle ────────────────────────────────────── */
+/* Load Material Icons so the arrow icon renders correctly */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+[data-testid="collapsedControl"] span,
+button[kind="header"] span,
+[data-testid="stSidebarCollapseButton"] span {
+    font-family: 'Material Icons' !important;
+    font-size: 1.4rem !important;
+    color: var(--accent-cyan) !important;
+}
+
+/* Fallback: if the icon still shows as text, hide the text and show a styled arrow */
+[data-testid="stSidebarCollapseButton"] {
+    background: transparent !important;
+    border: none !important;
+}
+[data-testid="stSidebarCollapseButton"] p {
+    display: none !important;
+}
+
 html, body, [data-testid="stAppViewContainer"] {
     background: var(--bg-primary) !important;
     color: var(--text-primary) !important;
@@ -77,7 +98,7 @@ html, body, [data-testid="stAppViewContainer"] {
     font-family: 'Syne', sans-serif !important;
     letter-spacing: 0.5px !important;
     transition: all 0.2s !important;
-    padding: 0.5rem 1.5rem !important;
+    padding: 0.6rem 1.5rem !important;
 }
 .stButton > button:hover {
     transform: translateY(-1px) !important;
@@ -90,7 +111,7 @@ html, body, [data-testid="stAppViewContainer"] {
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 2rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     position: relative;
     overflow: hidden;
 }
@@ -124,22 +145,23 @@ html, body, [data-testid="stAppViewContainer"] {
 /* ── Tab bar ────────────────────────────────────────────────────────────── */
 /* Outer pill container */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 4px !important;
+    gap: 6px !important;
     background: var(--bg-card) !important;
-    padding: 6px 8px !important;
+    padding: 8px 10px !important;
     border-radius: 14px !important;
     border: 1px solid var(--border) !important;
-    flex-wrap: wrap !important;          /* wrap on small screens */
+    flex-wrap: wrap !important;
+    margin-bottom: 1.5rem !important;
 }
 
 /* Individual tab */
 .stTabs [data-baseweb="tab"] {
-    height: 40px !important;
-    padding: 0 14px !important;
+    height: 44px !important;
+    padding: 0 18px !important;
     border-radius: 10px !important;
     font-weight: 600 !important;
-    font-size: 0.82rem !important;
-    letter-spacing: 0.2px !important;
+    font-size: 0.83rem !important;
+    letter-spacing: 0.3px !important;
     color: var(--text-secondary) !important;
     background: transparent !important;
     border: none !important;
@@ -147,7 +169,7 @@ html, body, [data-testid="stAppViewContainer"] {
     white-space: nowrap !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 6px !important;
+    gap: 7px !important;
 }
 
 /* Tab hover */
@@ -170,20 +192,22 @@ html, body, [data-testid="stAppViewContainer"] {
     display: none !important;
 }
 
-/* ── Tab icon prefixes via Font Awesome unicode ─────────────────────────── */
-/* Each nth-child maps to: Full Review, Refactor, Docs, Security,
-   Explain, Complexity, Tests, Translate, Chat */
-.stTabs [data-baseweb="tab"]:nth-child(1)::before { content: "\f002\00a0"; }  /* fa-search           */
-.stTabs [data-baseweb="tab"]:nth-child(2)::before { content: "\e2ca\00a0"; }  /* fa-wand-magic-sparkles */
-.stTabs [data-baseweb="tab"]:nth-child(3)::before { content: "\f518\00a0"; }  /* fa-book-open        */
-.stTabs [data-baseweb="tab"]:nth-child(4)::before { content: "\f3ed\00a0"; }  /* fa-shield-halved    */
-.stTabs [data-baseweb="tab"]:nth-child(5)::before { content: "\f0eb\00a0"; }  /* fa-lightbulb        */
-.stTabs [data-baseweb="tab"]:nth-child(6)::before { content: "\f201\00a0"; }  /* fa-chart-line       */
-.stTabs [data-baseweb="tab"]:nth-child(7)::before { content: "\e0c3\00a0"; }  /* fa-flask-vial       */
-.stTabs [data-baseweb="tab"]:nth-child(8)::before { content: "\f362\00a0"; }  /* fa-right-left       */
-.stTabs [data-baseweb="tab"]:nth-child(9)::before { content: "\f4ad\00a0"; }  /* fa-comments         */
+/* Tab panel — breathing room above content */
+.stTabs [data-baseweb="tab-panel"] {
+    padding: 1.75rem 0.25rem 1rem 0.25rem !important;
+}
 
-/* Apply FA font to the ::before pseudo-element */
+/* ── Tab icon prefixes via Font Awesome unicode ─────────────────────────── */
+.stTabs [data-baseweb="tab"]:nth-child(1)::before { content: "\f002\00a0"; }
+.stTabs [data-baseweb="tab"]:nth-child(2)::before { content: "\e2ca\00a0"; }
+.stTabs [data-baseweb="tab"]:nth-child(3)::before { content: "\f518\00a0"; }
+.stTabs [data-baseweb="tab"]:nth-child(4)::before { content: "\f3ed\00a0"; }
+.stTabs [data-baseweb="tab"]:nth-child(5)::before { content: "\f0eb\00a0"; }
+.stTabs [data-baseweb="tab"]:nth-child(6)::before { content: "\f201\00a0"; }
+.stTabs [data-baseweb="tab"]:nth-child(7)::before { content: "\e0c3\00a0"; }
+.stTabs [data-baseweb="tab"]:nth-child(8)::before { content: "\f362\00a0"; }
+.stTabs [data-baseweb="tab"]:nth-child(9)::before { content: "\f4ad\00a0"; }
+
 .stTabs [data-baseweb="tab"]::before {
     font-family: "Font Awesome 6 Free" !important;
     font-weight: 900 !important;
@@ -288,12 +312,25 @@ hr { border-color: var(--border) !important; }
 .stCheckbox label { color: var(--text-primary) !important; }
 .stRadio label    { color: var(--text-primary) !important; }
 
+/* ── Column spacing — give the input/settings row room to breathe ───────── */
+[data-testid="stHorizontalBlock"] {
+    gap: 2rem !important;
+    align-items: flex-start !important;
+}
+
+/* ── Vertical spacing between stacked elements inside tabs ─────────────── */
+.stTabs [data-baseweb="tab-panel"] > div > div {
+    gap: 1.2rem !important;
+}
+
 /* FA icon label helper */
 .fa-icon-label {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.5rem;
     font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
 }
 .fa-icon-label i { font-size: 0.95em; opacity: 0.85; }
 </style>

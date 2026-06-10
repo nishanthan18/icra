@@ -11,7 +11,7 @@ load_dotenv()
 # ── Page config (must be first Streamlit call) ──────────────────────────────
 st.set_page_config(
     page_title="CodeSage AI",
-    page_icon="assets/icon.png",   # use a PNG favicon; fallback is fine if missing
+    page_icon="assets/icon.png",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -65,8 +65,7 @@ FA_CDN = """
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
       crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
-  /* Make FA icons sit neatly beside text */
-  .fa-icon-label { display:inline-flex; align-items:center; gap:0.45rem; font-weight:600; }
+  .fa-icon-label { display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; margin-bottom:0.5rem; }
   .fa-icon-label i { font-size:0.95em; opacity:0.85; }
 </style>
 """
@@ -77,7 +76,7 @@ render_sidebar()
 hero_banner()
 
 # ── Code Input & Settings ────────────────────────────────────────────────────
-col_in, col_cfg = st.columns([3, 1])
+col_in, col_cfg = st.columns([3, 1], gap="large")
 
 with col_in:
     st.markdown(
@@ -88,7 +87,7 @@ with col_in:
         label="code_area",
         label_visibility="collapsed",
         placeholder="# Paste your code here...\n\ndef example():\n    pass",
-        height=280,
+        height=300,
         key="code_input",
     )
 
@@ -102,14 +101,15 @@ with col_cfg:
         "Rust", "C#", "PHP", "Ruby", "Swift", "Kotlin", "SQL", "Shell",
         "R", "Scala", "Dart", "Haskell", "Other",
     ])
+    st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
     review_depth = st.select_slider("Review Depth", ["Quick", "Standard", "Deep Dive"], value="Standard")
+    st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
     context = st.text_input("Context (optional)", placeholder="What does this code do?")
 
-# ── Feature Tabs ─────────────────────────────────────────────────────────────
-st.markdown("---")
+# ── Spacer before tabs ────────────────────────────────────────────────────────
+st.markdown("<div style='margin: 2.5rem 0 0 0;'></div>", unsafe_allow_html=True)
 
-# NOTE: Streamlit tab labels are plain strings — HTML is not rendered inside them.
-# Icons are applied inside each tab via st.markdown instead.
+# ── Feature Tabs ─────────────────────────────────────────────────────────────
 tabs = st.tabs([
     "Full Review", "Refactor", "Docs", "Security",
     "Explain", "Complexity", "Tests", "Translate", "Chat",
@@ -122,12 +122,14 @@ with tabs[0]:
         unsafe_allow_html=True,
     )
     st.caption("Comprehensive code review covering quality, bugs, style, and best practices.")
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     if st.button("Run Full Review", use_container_width=True, key="btn_review"):
         if check_code(code_input):
             with st.spinner("Analyzing code..."):
                 result = full_review(code_input, language, context, review_depth)
             if result:
                 save_history("Full Review", language, code_input, result)
+                st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
                 st.markdown(result)
 
 # ── Tab 2: Refactor ──────────────────────────────────────────────────────────
@@ -142,12 +144,14 @@ with tabs[1]:
          "Type safety", "Modularity", "Naming conventions", "Modern syntax", "Memory efficiency"],
         default=["Readability", "Performance"],
     )
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     if st.button("Refactor Code", use_container_width=True, key="btn_refactor"):
         if check_code(code_input):
             with st.spinner("Refactoring..."):
                 result = generate_refactored(code_input, language, refactor_focus)
             if result:
                 save_history("Refactor", language, code_input, result)
+                st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
                 st.markdown(result)
 
 # ── Tab 3: Documentation ─────────────────────────────────────────────────────
@@ -164,6 +168,7 @@ with tabs[2]:
     }
     available_styles = doc_style_map.get(language, ["Generic Docstring", "JSDoc", "Google Style"])
     doc_style = st.selectbox("Documentation Style", available_styles)
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
 
     if st.button("Generate Docs", use_container_width=True, key="btn_docs"):
         if check_code(code_input):
@@ -175,12 +180,12 @@ with tabs[2]:
                 st.session_state["docs_style"] = doc_style
                 st.session_state["docs_language"] = language
 
-    # ── Show result + download if available ──────────────────────────────────
     if st.session_state.get("docs_result"):
-        result      = st.session_state["docs_result"]
+        result       = st.session_state["docs_result"]
         cached_style = st.session_state.get("docs_style", doc_style)
         cached_lang  = st.session_state.get("docs_language", language)
 
+        st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
         st.markdown(result)
         st.markdown("---")
 
@@ -209,15 +214,13 @@ with tabs[2]:
                 key="dl_txt",
             )
 
-        # Icon labels on top of the download buttons via HTML
         st.markdown(
             """
             <style>
-            /* Visually prefix download button text with a FA icon via ::before pseudo on the wrapper */
             div[data-testid="stDownloadButton"] button::before {
                 font-family: "Font Awesome 6 Free";
                 font-weight: 900;
-                content: "\\f019\\00a0";  /* fa-download + non-breaking space */
+                content: "\\f019\\00a0";
                 margin-right: 2px;
             }
             </style>
@@ -234,7 +237,8 @@ with tabs[3]:
     st.markdown(
         """
         <div style='background:rgba(255,71,87,0.08); border:1px solid rgba(255,71,87,0.2);
-             border-radius:8px; padding:0.75rem 1rem; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;'>
+             border-radius:8px; padding:0.85rem 1.1rem; margin-bottom:1.25rem;
+             display:flex; align-items:center; gap:0.6rem;'>
             <i class="fa-solid fa-triangle-exclamation" style='color:#ff4757;'></i>
             <span style='color:#8892b0; font-size:0.9rem'>
                 OWASP-aligned security analysis. Results are advisory — always verify with dedicated tools.
@@ -243,12 +247,14 @@ with tabs[3]:
         """,
         unsafe_allow_html=True,
     )
+    st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
     if st.button("Run Security Audit", use_container_width=True, key="btn_security"):
         if check_code(code_input):
             with st.spinner("Running security audit..."):
                 result = find_security(code_input, language)
             if result:
                 save_history("Security Audit", language, code_input, result)
+                st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
                 st.markdown(result)
 
 # ── Tab 5: Explain ────────────────────────────────────────────────────────────
@@ -258,12 +264,14 @@ with tabs[4]:
         unsafe_allow_html=True,
     )
     explain_level = st.radio("Audience Level", ["Beginner", "Intermediate", "Expert"], horizontal=True)
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     if st.button("Explain Code", use_container_width=True, key="btn_explain"):
         if check_code(code_input):
             with st.spinner("Preparing explanation..."):
                 result = explain_code(code_input, language, explain_level)
             if result:
                 save_history("Explain", language, code_input, result)
+                st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
                 st.markdown(result)
 
 # ── Tab 6: Complexity ──────────────────────────────────────────────────────────
@@ -273,12 +281,14 @@ with tabs[5]:
         unsafe_allow_html=True,
     )
     st.caption("Analyze time complexity, space complexity, and algorithmic patterns.")
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     if st.button("Analyze Complexity", use_container_width=True, key="btn_complexity"):
         if check_code(code_input):
             with st.spinner("Analyzing complexity..."):
                 result = complexity_analysis(code_input, language)
             if result:
                 save_history("Complexity Analysis", language, code_input, result)
+                st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
                 st.markdown(result)
 
 # ── Tab 7: Tests ──────────────────────────────────────────────────────────────
@@ -298,12 +308,14 @@ with tabs[6]:
     }
     frameworks = test_framework_map.get(language, ["Generic test framework"])
     test_fw = st.selectbox("Testing Framework", frameworks)
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     if st.button("Generate Tests", use_container_width=True, key="btn_tests"):
         if check_code(code_input):
             with st.spinner("Generating test suite..."):
                 result = generate_tests(code_input, language, test_fw)
             if result:
                 save_history("Generate Tests", language, code_input, result)
+                st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
                 st.markdown(result)
 
 # ── Tab 8: Translate ──────────────────────────────────────────────────────────
@@ -315,34 +327,32 @@ with tabs[7]:
     all_langs = ["Python", "JavaScript", "TypeScript", "Java", "C++", "C", "Go",
                  "Rust", "C#", "PHP", "Ruby", "Swift", "Kotlin", "Dart"]
     target_lang = st.selectbox("Translate to", [l for l in all_langs if l != language])
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     if st.button("Translate Code", use_container_width=True, key="btn_translate"):
         if check_code(code_input):
             with st.spinner(f"Translating {language} → {target_lang}..."):
                 result = translate_code(code_input, language, target_lang)
             if result:
                 save_history(f"Translate → {target_lang}", language, code_input, result)
+                st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
                 st.markdown(result)
 
-# ── Tab 9: Chat ───────────────────────────────────────────────────────────────
-# ── Tab 9: Chat ───────────────────────────────────────────────────────────────
 # ── Tab 9: Chat ───────────────────────────────────────────────────────────────
 with tabs[8]:
     st.markdown("""
     Ask anything about your code — architecture, specific lines,
     alternatives, bugs, optimizations, or programming concepts.
     """)
+    st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
 
-    # Custom avatar URLs (inline SVG as data URI)
     USER_AVATAR = "https://api.dicebear.com/7.x/shapes/svg?seed=user&backgroundColor=7c3aed&scale=80"
     BOT_AVATAR  = "https://api.dicebear.com/7.x/shapes/svg?seed=sage&backgroundColor=00d4ff&scale=80"
 
-    # Display chat history
     for msg in st.session_state.chat_history:
         avatar = USER_AVATAR if msg["role"] == "user" else BOT_AVATAR
         with st.chat_message(msg["role"], avatar=avatar):
             st.markdown(msg["content"])
 
-    # Chat Input
     question = st.chat_input("Ask a question about your code...")
 
     if question:
@@ -374,6 +384,7 @@ with tabs[8]:
 
             st.rerun()
 
+    st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
     st.markdown("---")
 
     col1, col2, col3 = st.columns([1, 1, 4])
@@ -385,5 +396,7 @@ with tabs[8]:
 
     with col2:
         st.metric("Messages", len(st.session_state.chat_history))
+
 # ── Footer ───────────────────────────────────────────────────────────────────
+st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
 footer()
