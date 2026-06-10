@@ -325,38 +325,39 @@ with tabs[7]:
 
 # ── Tab 9: Chat ───────────────────────────────────────────────────────────────
 # ── Tab 9: Chat ───────────────────────────────────────────────────────────────
+# ── Tab 9: Chat ───────────────────────────────────────────────────────────────
 with tabs[8]:
     st.markdown("""
     Ask anything about your code — architecture, specific lines,
     alternatives, bugs, optimizations, or programming concepts.
     """)
 
+    # Custom avatar URLs (inline SVG as data URI)
+    USER_AVATAR = "https://api.dicebear.com/7.x/shapes/svg?seed=user&backgroundColor=7c3aed&scale=80"
+    BOT_AVATAR  = "https://api.dicebear.com/7.x/shapes/svg?seed=sage&backgroundColor=00d4ff&scale=80"
+
     # Display chat history
     for msg in st.session_state.chat_history:
-        with st.chat_message(msg["role"]):
+        avatar = USER_AVATAR if msg["role"] == "user" else BOT_AVATAR
+        with st.chat_message(msg["role"], avatar=avatar):
             st.markdown(msg["content"])
 
     # Chat Input
-    question = st.chat_input(
-        "Ask a question about your code..."
-    )
+    question = st.chat_input("Ask a question about your code...")
 
     if question:
         if not code_input.strip():
             st.warning("⚠️ Paste some code first so I have context!")
         else:
-            # Save user message
             st.session_state.chat_history.append({
                 "role": "user",
                 "content": question
             })
 
-            # Show user message immediately
-            with st.chat_message("user"):
+            with st.chat_message("user", avatar=USER_AVATAR):
                 st.markdown(question)
 
-            # Generate AI response
-            with st.chat_message("assistant"):
+            with st.chat_message("assistant", avatar=BOT_AVATAR):
                 with st.spinner("Thinking..."):
                     reply = chat_about_code(
                         code_input,
@@ -364,10 +365,8 @@ with tabs[8]:
                         question,
                         st.session_state.chat_history[:-1]
                     )
-
                     if reply:
                         st.markdown(reply)
-
                         st.session_state.chat_history.append({
                             "role": "assistant",
                             "content": reply
@@ -380,19 +379,11 @@ with tabs[8]:
     col1, col2, col3 = st.columns([1, 1, 4])
 
     with col1:
-        if st.button(
-            "🗑️ Clear Chat",
-            use_container_width=True,
-            key="clear_chat"
-        ):
+        if st.button("🗑️ Clear Chat", use_container_width=True, key="clear_chat"):
             st.session_state.chat_history = []
             st.rerun()
 
     with col2:
-        st.metric(
-            "Messages",
-            len(st.session_state.chat_history)
-        )
-
+        st.metric("Messages", len(st.session_state.chat_history))
 # ── Footer ───────────────────────────────────────────────────────────────────
 footer()
