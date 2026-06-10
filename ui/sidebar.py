@@ -49,11 +49,16 @@ def render_sidebar():
         transform: rotate(-135deg) translateX(-1px);
     }
 
-    /* Also suppress any raw text fallback inside the button */
-    [data-testid="collapsedControl"] span,
-    [data-testid="collapsedControl"] p {
-        display: none !important;
-    }
+  /* Also suppress any raw text fallback inside the button */
+[data-testid="collapsedControl"] span,
+[data-testid="collapsedControl"] p,
+[data-testid="collapsedControl"] svg {
+    display: none !important;
+}
+
+[data-testid="collapsedControl"] * {
+    color: transparent !important;
+}
     </style>
     """, unsafe_allow_html=True)
 

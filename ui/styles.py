@@ -25,25 +25,22 @@ MAIN_CSS = """
 * { font-family: 'Syne', sans-serif !important; }
 code, pre, .stCode * { font-family: 'JetBrains Mono', monospace !important; }
 
-/* ── Sidebar collapse/expand toggle ────────────────────────────────────── */
-/* Load Material Icons so the arrow icon renders correctly */
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+/* ── Sidebar collapse button fix ───────────────────────────────────────── */
 
 [data-testid="collapsedControl"] span,
+[data-testid="collapsedControl"] p,
+[data-testid="collapsedControl"] svg,
+[data-testid="stSidebarCollapseButton"] span,
+[data-testid="stSidebarCollapseButton"] p,
+[data-testid="stSidebarCollapseButton"] svg,
 button[kind="header"] span,
-[data-testid="stSidebarCollapseButton"] span {
-    font-family: 'Material Icons' !important;
-    font-size: 1.4rem !important;
-    color: var(--accent-cyan) !important;
+button[kind="header"] p {
+    display: none !important;
 }
 
-/* Fallback: if the icon still shows as text, hide the text and show a styled arrow */
 [data-testid="stSidebarCollapseButton"] {
     background: transparent !important;
     border: none !important;
-}
-[data-testid="stSidebarCollapseButton"] p {
-    display: none !important;
 }
 
 html, body, [data-testid="stAppViewContainer"] {
@@ -56,7 +53,10 @@ html, body, [data-testid="stAppViewContainer"] {
     background: var(--bg-secondary) !important;
     border-right: 1px solid var(--border) !important;
 }
-[data-testid="stSidebar"] * { color: var(--text-primary) !important; }
+
+[data-testid="stSidebar"] * {
+    color: var(--text-primary) !important;
+}
 
 /* ── Inputs ─────────────────────────────────────────────────────────────── */
 .stTextArea textarea {
