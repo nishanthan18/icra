@@ -8,41 +8,33 @@ def render_sidebar():
 
     # ── Fix the sidebar collapse button icon (removes "keyboard_double_arrow_right" text) ──
     st.markdown("""
-    <style>
-    /* Hide the default Streamlit collapse button content */
-    [data-testid="collapsedControl"] svg,
-    button[data-testid="baseButton-headerNoPadding"] svg { display: none !important; }
-
-    /* Sidebar collapse/expand button — clean chevron */
-    [data-testid="collapsedControl"] {
-    font-size: 0 !important;   /* hide text */
-    color: transparent !important;
-}
-
-[data-testid="collapsedControl"] * {
-    display: none !important;
-}
-
+<style>
+[data-testid="collapsedControl"],
 button[data-testid="baseButton-headerNoPadding"] {
     font-size: 0 !important;
     color: transparent !important;
+    text-indent: -9999px !important;
+    overflow: hidden !important;
+    position: relative !important;
 }
 
-button[data-testid="baseButton-headerNoPadding"] * {
+[data-testid="collapsedControl"] svg,
+button[data-testid="baseButton-headerNoPadding"] svg {
     display: none !important;
 }
 
-/* Custom chevron */
 [data-testid="collapsedControl"]::after {
     content: "";
     position: absolute;
+    top: 50%;
+    left: 50%;
     width: 8px;
     height: 8px;
     border-right: 2px solid #00d4ff;
     border-top: 2px solid #00d4ff;
-    transform: rotate(45deg);
+    transform: translate(-50%, -50%) rotate(45deg);
 }
-    </style>
+</style>
     """, unsafe_allow_html=True)
 
     with st.sidebar:
