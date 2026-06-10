@@ -57,6 +57,16 @@ html, body, [data-testid="stAppViewContainer"] {
 [data-testid="stSidebar"] * {
     color: var(--text-primary) !important;
 }
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapseButton"],
+button[kind="header"] {
+    font-size: 0 !important;
+    color: transparent !important;
+}
+[data-testid="collapsedControl"] *,
+[data-testid="stSidebarCollapseButton"] * {
+    color: transparent !important;
+}
 
 /* ── Inputs ─────────────────────────────────────────────────────────────── */
 .stTextArea textarea {

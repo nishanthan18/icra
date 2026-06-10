@@ -15,49 +15,32 @@ def render_sidebar():
 
     /* Sidebar collapse/expand button — clean chevron */
     [data-testid="collapsedControl"] {
-        background: #131929 !important;
-        border: 1px solid #1e2a45 !important;
-        border-radius: 50% !important;
-        width: 28px !important;
-        height: 28px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        cursor: pointer !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
-        transition: all 0.2s !important;
-        position: relative !important;
-    }
-    [data-testid="collapsedControl"]:hover {
-        border-color: #00d4ff !important;
-        box-shadow: 0 0 10px rgba(0,212,255,0.25) !important;
-    }
-    /* Draw a chevron using ::after pseudo-element */
-    [data-testid="collapsedControl"]::after {
-        content: '';
-        display: block;
-        width: 7px;
-        height: 7px;
-        border-right: 2px solid #00d4ff;
-        border-top: 2px solid #00d4ff;
-        transform: rotate(45deg) translateX(-1px);
-        position: absolute;
-    }
-    /* When sidebar is open, flip the chevron */
-    [data-testid="stSidebar"][aria-expanded="true"] ~ * [data-testid="collapsedControl"]::after,
-    section[data-testid="stSidebar"] + div [data-testid="collapsedControl"]::after {
-        transform: rotate(-135deg) translateX(-1px);
-    }
-
-  /* Also suppress any raw text fallback inside the button */
-[data-testid="collapsedControl"] span,
-[data-testid="collapsedControl"] p,
-[data-testid="collapsedControl"] svg {
-    display: none !important;
+    font-size: 0 !important;   /* hide text */
+    color: transparent !important;
 }
 
 [data-testid="collapsedControl"] * {
+    display: none !important;
+}
+
+button[data-testid="baseButton-headerNoPadding"] {
+    font-size: 0 !important;
     color: transparent !important;
+}
+
+button[data-testid="baseButton-headerNoPadding"] * {
+    display: none !important;
+}
+
+/* Custom chevron */
+[data-testid="collapsedControl"]::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #00d4ff;
+    border-top: 2px solid #00d4ff;
+    transform: rotate(45deg);
 }
     </style>
     """, unsafe_allow_html=True)
