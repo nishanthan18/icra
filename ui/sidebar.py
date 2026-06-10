@@ -6,15 +6,14 @@ import os
 def render_sidebar():
     """Render the main app sidebar."""
 
-    # ── Sidebar collapse button — clean chevron icon ──────────────────────────
+    # ── Fix the sidebar collapse button icon (removes "keyboard_double_arrow_right" text) ──
     st.markdown("""
     <style>
-    /* Kill every child element inside the collapse button */
-    [data-testid="collapsedControl"] * {
-        display: none !important;
-    }
+    /* Hide the default Streamlit collapse button content */
+    [data-testid="collapsedControl"] svg,
+    button[data-testid="baseButton-headerNoPadding"] svg { display: none !important; }
 
-    /* Button shape */
+    /* Sidebar collapse/expand button — clean chevron */
     [data-testid="collapsedControl"] {
         background: #131929 !important;
         border: 1px solid #1e2a45 !important;
@@ -25,46 +24,41 @@ def render_sidebar():
         align-items: center !important;
         justify-content: center !important;
         cursor: pointer !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+        transition: all 0.2s !important;
         position: relative !important;
-        overflow: hidden !important;
-        transition: border-color 0.2s, box-shadow 0.2s !important;
     }
     [data-testid="collapsedControl"]:hover {
         border-color: #00d4ff !important;
         box-shadow: 0 0 10px rgba(0,212,255,0.25) !important;
     }
-
-    /* ‹ when sidebar is OPEN — click will collapse it */
-    [data-testid="stSidebar"][aria-expanded="true"] [data-testid="collapsedControl"]::after,
-    [data-testid="stSidebar"] [data-testid="collapsedControl"]::after {
-        content: '‹' !important;
-        display: block !important;
-        color: #00d4ff !important;
-        font-size: 22px !important;
-        line-height: 1 !important;
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
+    /* Draw a chevron using ::after pseudo-element */
+    [data-testid="collapsedControl"]::after {
+        content: '';
+        display: block;
+        width: 7px;
+        height: 7px;
+        border-right: 2px solid #00d4ff;
+        border-top: 2px solid #00d4ff;
+        transform: rotate(45deg) translateX(-1px);
+        position: absolute;
+    }
+    /* When sidebar is open, flip the chevron */
+    [data-testid="stSidebar"][aria-expanded="true"] ~ * [data-testid="collapsedControl"]::after,
+    section[data-testid="stSidebar"] + div [data-testid="collapsedControl"]::after {
+        transform: rotate(-135deg) translateX(-1px);
     }
 
-    /* › when sidebar is COLLAPSED — click will expand it */
-    [data-testid="collapsedControl"]::after {
-        content: '›' !important;
-        display: block !important;
-        color: #00d4ff !important;
-        font-size: 22px !important;
-        line-height: 1 !important;
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
+    /* Also suppress any raw text fallback inside the button */
+    [data-testid="collapsedControl"] span,
+    [data-testid="collapsedControl"] p {
+        display: none !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
     with st.sidebar:
-        # ── Logo ──────────────────────────────────────────────────────────────
+        # ── Logo ─────────────────────────────────────────────────────────────
         st.markdown("""
         <div style='text-align:center; padding: 1.25rem 0 1.5rem'>
             <svg width="44" height="44" viewBox="0 0 40 40" fill="none"
@@ -89,7 +83,7 @@ def render_sidebar():
         </div>
         """, unsafe_allow_html=True)
 
-        # ── User info ──────────────────────────────────────────────────────────
+        # ── User info ─────────────────────────────────────────────────────────
         user = st.session_state.get("user")
         if user:
             name   = user.get("full_name") or user.get("email", "User")
@@ -115,9 +109,9 @@ def render_sidebar():
             </div>
             """, unsafe_allow_html=True)
 
-        # ── API Configuration ──────────────────────────────────────────────────
-        _ENV_GROQ_KEY   = os.getenv("GROQ_API_KEY", "")
-        _ENV_GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
+        # ── API Configuration ─────────────────────────────────────────────────
+        _ENV_GROQ_KEY    = os.getenv("GROQ_API_KEY", "")
+        _ENV_GEMINI_KEY  = os.getenv("GEMINI_API_KEY", "")
 
         provider = st.selectbox("Provider", ["Groq", "Gemini"], key="provider")
 
@@ -171,7 +165,7 @@ def render_sidebar():
         st.markdown("<div style='height:0.75rem'></div>", unsafe_allow_html=True)
         st.markdown("---")
 
-        # ── Session Stats ──────────────────────────────────────────────────────
+        # ── Session Stats ─────────────────────────────────────────────────────
         st.markdown("""
         <div style='display:flex; align-items:center; gap:0.5rem; margin:0.75rem 0 0.85rem'>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -198,7 +192,7 @@ def render_sidebar():
         </div>
         """, unsafe_allow_html=True)
 
-        # ── Recent history ─────────────────────────────────────────────────────
+        # ── Recent history ────────────────────────────────────────────────────
         if reviews_done > 0:
             st.markdown("---")
             st.markdown("""
@@ -224,7 +218,7 @@ def render_sidebar():
 
         st.markdown("---")
 
-        # ── Action buttons ─────────────────────────────────────────────────────
+        # ── Action buttons ────────────────────────────────────────────────────
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Clear", use_container_width=True, key="btn_clear"):
