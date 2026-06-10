@@ -22,26 +22,43 @@ MAIN_CSS = """
     --border-glow: rgba(0, 212, 255, 0.3);
 }
 
-* { font-family: 'Syne', sans-serif !important; }
-code, pre, .stCode * { font-family: 'JetBrains Mono', monospace !important; }
+/* App-level font only, not global star selector */
+html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"] {
+    font-family: 'Syne', sans-serif;
+}
 
+/* Code font */
+code, pre, .stCode *, .stTextArea textarea {
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* Main app background */
 html, body, [data-testid="stAppViewContainer"] {
     background: var(--bg-primary) !important;
     color: var(--text-primary) !important;
 }
 
+/* Sidebar */
 [data-testid="stSidebar"] {
     background: var(--bg-secondary) !important;
     border-right: 1px solid var(--border) !important;
 }
-[data-testid="stSidebar"] * { color: var(--text-primary) !important; }
 
+/* Sidebar text without forcing all internals */
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] .stMarkdown,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span:not([data-baseweb]),
+[data-testid="stSidebar"] small {
+    color: var(--text-primary) !important;
+}
+
+/* Text area */
 .stTextArea textarea {
     background: var(--bg-card) !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border) !important;
     border-radius: 8px !important;
-    font-family: 'JetBrains Mono', monospace !important;
     font-size: 13px !important;
     line-height: 1.6 !important;
 }
@@ -50,20 +67,37 @@ html, body, [data-testid="stAppViewContainer"] {
     box-shadow: 0 0 0 2px var(--border-glow) !important;
 }
 
-.stTextInput input, .stSelectbox select {
+/* Text input */
+.stTextInput input {
     background: var(--bg-card) !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border) !important;
     border-radius: 8px !important;
 }
 
-.stSelectbox > div > div {
+/* Selectbox safe styling */
+.stSelectbox div[data-baseweb="select"] > div {
     background: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
     border-radius: 8px !important;
     color: var(--text-primary) !important;
 }
 
+/* Dropdown popup options */
+ul[data-testid="stSelectboxVirtualDropdown"] {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+}
+ul[data-testid="stSelectboxVirtualDropdown"] li {
+    color: var(--text-primary) !important;
+    background: var(--bg-card) !important;
+}
+ul[data-testid="stSelectboxVirtualDropdown"] li:hover {
+    background: var(--bg-elevated) !important;
+}
+
+/* Buttons */
 .stButton > button {
     background: linear-gradient(135deg, var(--accent-purple), #4f46e5) !important;
     color: white !important;
@@ -80,6 +114,7 @@ html, body, [data-testid="stAppViewContainer"] {
     box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4) !important;
 }
 
+/* Hero */
 .hero-banner {
     background: linear-gradient(135deg, #0f1629 0%, #1a1035 50%, #0f1629 100%);
     border: 1px solid var(--border);
@@ -92,7 +127,9 @@ html, body, [data-testid="stAppViewContainer"] {
 .hero-banner::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-purple), transparent);
 }
@@ -110,6 +147,7 @@ html, body, [data-testid="stAppViewContainer"] {
     margin: 0;
 }
 
+/* Metric cards */
 .metric-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -118,15 +156,24 @@ html, body, [data-testid="stAppViewContainer"] {
     text-align: center;
     transition: all 0.2s;
 }
-.metric-card:hover { border-color: var(--accent-cyan); transform: translateY(-2px); }
+.metric-card:hover {
+    border-color: var(--accent-cyan);
+    transform: translateY(-2px);
+}
 .metric-number {
     font-size: 2rem;
     font-weight: 800;
     line-height: 1;
     margin-bottom: 0.25rem;
 }
-.metric-label { color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+.metric-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
+/* Cards */
 .section-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -135,6 +182,7 @@ html, body, [data-testid="stAppViewContainer"] {
     margin: 1rem 0;
 }
 
+/* Badges */
 .badge {
     display: inline-block;
     padding: 2px 10px;
@@ -148,6 +196,7 @@ html, body, [data-testid="stAppViewContainer"] {
 .badge-info     { background: rgba(0,212,255,0.1); color: var(--accent-cyan); border: 1px solid rgba(0,212,255,0.2); }
 .badge-success  { background: rgba(0,255,136,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,136,0.2); }
 
+/* Tabs */
 .stTabs [data-baseweb="tab-list"] {
     background: var(--bg-card) !important;
     border-radius: 10px !important;
@@ -165,8 +214,13 @@ html, body, [data-testid="stAppViewContainer"] {
     color: var(--accent-cyan) !important;
 }
 
-.stMarkdown h1, .stMarkdown h2, .stMarkdown h3 { color: var(--text-primary) !important; }
-.stMarkdown p, .stMarkdown li { color: var(--text-secondary) !important; }
+/* Markdown */
+.stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+    color: var(--text-primary) !important;
+}
+.stMarkdown p, .stMarkdown li {
+    color: var(--text-secondary) !important;
+}
 .stMarkdown code {
     background: var(--bg-elevated) !important;
     color: var(--accent-cyan) !important;
@@ -174,9 +228,16 @@ html, body, [data-testid="stAppViewContainer"] {
     padding: 1px 5px !important;
     font-family: 'JetBrains Mono', monospace !important;
 }
-.stMarkdown pre { background: var(--bg-elevated) !important; border-radius: 8px !important; }
-.stAlert { background: var(--bg-card) !important; border-radius: 8px !important; }
+.stMarkdown pre {
+    background: var(--bg-elevated) !important;
+    border-radius: 8px !important;
+}
+.stAlert {
+    background: var(--bg-card) !important;
+    border-radius: 8px !important;
+}
 
+/* History */
 .history-item {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -185,8 +246,11 @@ html, body, [data-testid="stAppViewContainer"] {
     margin: 0.4rem 0;
     transition: all 0.2s;
 }
-.history-item:hover { border-color: var(--accent-purple); }
+.history-item:hover {
+    border-color: var(--accent-purple);
+}
 
+/* Language pill */
 .lang-pill {
     background: rgba(124,58,237,0.2);
     color: #a78bfa;
@@ -198,16 +262,25 @@ html, body, [data-testid="stAppViewContainer"] {
     font-family: 'JetBrains Mono', monospace;
 }
 
-hr { border-color: var(--border) !important; }
+/* Divider */
+hr {
+    border-color: var(--border) !important;
+}
 
+/* Expander */
 [data-testid="stExpander"] {
     background: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
     border-radius: 10px !important;
 }
 
-.stSlider > div > div { background: var(--accent-purple) !important; }
-.stCheckbox label { color: var(--text-primary) !important; }
-.stRadio label { color: var(--text-primary) !important; }
+/* Slider / checkbox / radio */
+.stSlider > div > div {
+    background: var(--accent-purple) !important;
+}
+.stCheckbox label,
+.stRadio label {
+    color: var(--text-primary) !important;
+}
 </style>
 """
