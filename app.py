@@ -71,10 +71,6 @@ FA_CDN = """
 </style>
 """
 st.markdown(FA_CDN, unsafe_allow_html=True)
-st.markdown(MAIN_CSS, unsafe_allow_html=True)
-
-render_sidebar()
-hero_banner()
 
 # ── Code Input & Settings ────────────────────────────────────────────────────
 col_in, col_cfg = st.columns([3, 1])
